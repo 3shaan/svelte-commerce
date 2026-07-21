@@ -6,6 +6,8 @@ export const load: PageServerLoad = async (event) => {
         return redirect(302, '/login');
     }
 
+    return redirect(302, '/dashboard/overview');
+
     return {
         user: event.locals.user
     }
