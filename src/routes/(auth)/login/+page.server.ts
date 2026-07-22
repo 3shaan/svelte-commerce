@@ -34,15 +34,14 @@ export const actions: Actions = {
         },
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof APIError) {
-
-		return message(form, error.message, { status: 400 });
-       
+        return message(form, error.message, { status: 400 });
       }
 
       return message(form, "An unexpected error occurred. Please try again.", {
-		status: 500,
-	  });
+        status: 500,
+      });
     }
 
     throw redirect(302, "/dashboard");
