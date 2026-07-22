@@ -4,6 +4,7 @@
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import Separator from "$lib/components/ui/separator/separator.svelte";
   import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
+  import DarkModeToggle from "$lib/components/dark-mode-toggle.svelte";
 
   let { data, children }: LayoutProps = $props();
 </script>
@@ -20,6 +21,7 @@
           orientation="vertical"
           class="me-2 data-[orientation=vertical]:h-4"
         />
+        <DarkModeToggle />
       </div>
     </header>
     {@render children()}
