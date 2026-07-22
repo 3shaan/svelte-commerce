@@ -14,8 +14,8 @@
 
   import { superForm, type SuperValidated } from "sveltekit-superforms";
   import type { LoginSchema } from "$lib/server/(auth)/login/login.schema";
-  import { enhance } from "$app/forms";
   import FieldError from "$lib/components/ui/field/field-error.svelte";
+  import Spinner from "$lib/components/ui/spinner/spinner.svelte";
 
   interface Props {
     form: SuperValidated<LoginSchema>;
@@ -27,7 +27,9 @@
     ...restProps
   }: HTMLAttributes<HTMLDivElement> & Props = $props();
 
-  let { form, errors, constraints, message } = superForm(initialForm);
+  // svelte-ignore state_referenced_locally
+  let { form, errors, constraints, message, enhance, delayed } =
+    superForm(initialForm);
 
   const id = $props.id();
 </script>
@@ -35,7 +37,7 @@
 <div class={cn("flex flex-col gap-6", className)} {...restProps}>
   <Card.Root class="overflow-hidden p-0">
     <Card.Content class="grid p-0 md:grid-cols-2">
-      <form class="p-6 md:p-8" method="POST">
+      <form class="p-6 md:p-8" method="POST" action="?/signInEmail" use:enhance>
         <FieldGroup>
           <div class="flex flex-col items-center gap-2 text-center">
             <h1 class="text-2xl font-bold">Welcome back</h1>
@@ -46,6 +48,7 @@
           <Field>
             <FieldLabel for="email-{id}">Email</FieldLabel>
             <Input
+              name="email"
               id="email-{id}"
               type="email"
               placeholder="m@example.com"
@@ -73,6 +76,7 @@
               id="password-{id}"
               type="password"
               required
+              name="password"
               bind:value={$form.password}
               {...$constraints.password}
             />
@@ -83,8 +87,18 @@
             {/if}
           </Field>
           <Field>
-            <Button type="submit">Login</Button>
+            <Button type="submit" disabled={$delayed}>
+              Login
+              {#if $delayed}
+                <Spinner />
+              {/if}
+            </Button>
           </Field>
+          {#if $message}
+            <div class="mb-4 rounded-lg bg-red-100 p-4 text-sm text-red-700">
+              {$message}
+            </div>
+          {/if}
           <FieldSeparator class="*:data-[slot=field-separator-content]:bg-card">
             Or continue with
           </FieldSeparator>
@@ -100,7 +114,7 @@
             </Button>
           </Field>
           <FieldDescription class="text-center">
-            Don't have an account? <a href="##">Sign up</a>
+            Don't have an account? <a href="/registration">Sign up</a>
           </FieldDescription>
         </FieldGroup>
       </form>

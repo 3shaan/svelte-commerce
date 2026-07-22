@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types";
-import { superValidate } from "sveltekit-superforms";
+import { message, superValidate } from "sveltekit-superforms";
 import { zod4 } from "sveltekit-superforms/adapters";
 import { registrationSchema } from "$lib/server/(auth)/registration/registration.schema";
 import { redirect, type Actions } from "@sveltejs/kit";
@@ -38,9 +38,9 @@ export const actions: Actions = {
 			});
 		} catch (error) {
 			if (error instanceof APIError) {
-				return fail(400, { message: error.message || 'Registration failed' });
+				return message(form, error.message, { status: 400 });
 			}
-			return fail(500, { message: 'Unexpected error' });
+			return message(form, 'An unexpected error occurred. Please try again.', { status: 500 });
 		}
 
 		return redirect(302, '/dashboard');

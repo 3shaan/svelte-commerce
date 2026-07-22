@@ -27,7 +27,9 @@
     ...restProps
   }: HTMLAttributes<HTMLDivElement> & Props = $props();
 
-  let { form, errors, constraints, delayed, enhance } = superForm(initialForm);
+  let { form, errors, constraints, delayed, enhance, message } =
+    // svelte-ignore state_referenced_locally
+    superForm(initialForm);
 
   const id = $props.id();
 </script>
@@ -111,6 +113,11 @@
               {/if}
             </Button>
           </Field>
+          {#if $message}
+            <div class="mb-4 rounded-lg bg-red-100 p-4 text-sm text-red-700">
+              {$message}
+            </div>
+          {/if}
           <FieldSeparator class="*:data-[slot=field-separator-content]:bg-card">
             Or continue with
           </FieldSeparator>
@@ -126,7 +133,7 @@
             </Button>
           </Field>
           <FieldDescription class="text-center">
-            Don't have an account? <a href="##">Sign up</a>
+            Already have an account? <a href="/login">Login</a>
           </FieldDescription>
         </FieldGroup>
       </form>
